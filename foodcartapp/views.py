@@ -2,7 +2,9 @@ import json
 
 from django.http import JsonResponse
 from django.templatetags.static import static
+from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .models import Product, Order, OrderProducts
 
@@ -61,12 +63,12 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
+    data = request.data
     try:
-        data = request.data
-    except ValueError:
-        return JsonResponse({
-            'error': 'bla bla bla',
-        })
+        validate_api_order_request(data)
+    except Exception as e:
+        return Response({"error": str(e)},
+                        status=status.HTTP_406_NOT_ACCEPTABLE)
 
     order = Order.objects.create(first_name=data['firstname'],
                                  last_name=data['lastname'],
@@ -78,4 +80,10 @@ def register_order(request):
             product=Product.objects.get(id=product_data['product']),
             order=order, amount=product_data['quantity'])
 
-    return JsonResponse({})
+    return Response({}, status=status.HTTP_200_OK)
+
+
+def validate_api_order_request(data):
+    if any([isinstance(data['products'], str), not data['products'], ]):
+        raise Exception('Список продуктов неверного формата или отсутствует')
+
