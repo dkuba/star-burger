@@ -84,6 +84,11 @@ def register_order(request):
 
 
 def validate_api_order_request(data):
-    if any([isinstance(data['products'], str), not data['products'], ]):
-        raise Exception('Список продуктов неверного формата или отсутствует')
+    products_ids = [product.id for product in Product.objects.all()]
+    if any([isinstance(data['products'], str), not data['products'],
+            not data['firstname'], not data['phonenumber']]):
+        raise Exception('Запрос неверного формата')
 
+    for product in data['products']:
+        if product['product'] not in products_ids:
+            raise Exception('Идентификатор продукта не найден')

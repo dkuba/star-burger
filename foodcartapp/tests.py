@@ -56,3 +56,49 @@ class OrderTestCase(APITestCase):
         "address": "4"}""", content_type='application/json')
 
         self.assertTrue(status.is_client_error(response.status_code))
+
+    def test_first_name_is_null(self):
+        response = self.client.post(self.url, """{"products": [{"product": 1,
+        "quantity": 1}], "firstname": null, "lastname": "2",
+        "phonenumber": "3", "address": "4"}""",
+                                    content_type='application/json')
+
+        self.assertTrue(status.is_client_error(response.status_code))
+
+    def test_no_order_keys(self):
+        response = self.client.post(self.url, """{"products": [{"product": 1,
+        "quantity": 1}]}""", content_type='application/json')
+
+        self.assertTrue(status.is_client_error(response.status_code))
+
+    def test_order_keys_null(self):
+        response = self.client.post(self.url, """{"products": [{"product": 1,
+        "quantity": 1}], "firstname": null, "lastname": null,
+        "phonenumber": null, "address": null}""",
+                                    content_type='application/json')
+
+        self.assertTrue(status.is_client_error(response.status_code))
+
+    def test_no_phone_number(self):
+        response = self.client.post(self.url, """{"products": [{"product": 1,
+        "quantity": 1}], "firstname": "Тимур", "lastname": "Иванов",
+        "phonenumber": "", "address": "Москва, Новый Арбат 10"}""",
+                                    content_type='application/json')
+
+        self.assertTrue(status.is_client_error(response.status_code))
+
+    def test_wrong_product_id(self):
+        response = self.client.post(self.url, """{"products": [{"product":
+        "jngrtgntg", "quantity": 1}], "firstname": "1", "lastname": "2",
+        "phonenumber": "3", "address": "4"}""",
+                                    content_type='application/json')
+
+        self.assertTrue(status.is_client_error(response.status_code))
+
+    def test_firstname_is_list(self):
+        response = self.client.post(self.url, """{"products": [{"product": 1,
+        "quantity": 1}], "firstname": [], "lastname": "2", "phonenumber": "3",
+        "address": "4"}""",
+                                    content_type='application/json')
+
+        self.assertTrue(status.is_client_error(response.status_code))
