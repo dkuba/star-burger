@@ -97,6 +97,9 @@ class Order(models.Model):
 class OrderProducts(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,
                                 verbose_name='продукт')
+    product_price = models.DecimalField(verbose_name='Цена',
+                                        max_digits=6, decimal_places=2,
+                                        validators=[MinValueValidator(0)])
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     quantity = models.IntegerField(verbose_name='Количество')
 
