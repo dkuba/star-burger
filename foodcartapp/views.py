@@ -1,5 +1,3 @@
-import json
-
 from django.http import JsonResponse
 from django.templatetags.static import static
 from rest_framework import status
@@ -7,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Product, Order, OrderProducts
+from .serializers import OrderSerializer
 
 
 def banners_list_api(request):
@@ -63,32 +62,18 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    data = request.data
-    try:
-        validate_api_order_request(data)
-    except Exception as e:
-        return Response({"error": str(e)},
-                        status=status.HTTP_406_NOT_ACCEPTABLE)
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
 
-    order = Order.objects.create(first_name=data['firstname'],
-                                 last_name=data['lastname'],
-                                 phone_number=data['phonenumber'],
-                                 address=data['address'])
+    order = Order.objects.create(
+        firstname=serializer.validated_data['firstname'],
+        lastname=serializer.validated_data['lastname'],
+        phonenumber=serializer.validated_data['phonenumber'],
+        address=serializer.validated_data['address'])
 
-    for product_data in data['products']:
+    for product_data in serializer.validated_data['products']:
         OrderProducts.objects.create(
             product=Product.objects.get(id=product_data['product']),
-            order=order, amount=product_data['quantity'])
+            order=order, quantity=product_data['quantity'])
 
     return Response({}, status=status.HTTP_200_OK)
-
-
-def validate_api_order_request(data):
-    products_ids = [product.id for product in Product.objects.all()]
-    if any([isinstance(data['products'], str), not data['products'],
-            not data['firstname'], not data['phonenumber']]):
-        raise Exception('Запрос неверного формата')
-
-    for product in data['products']:
-        if product['product'] not in products_ids:
-            raise Exception('Идентификатор продукта не найден')

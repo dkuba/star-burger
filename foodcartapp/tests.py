@@ -16,7 +16,7 @@ class OrderTestCase(APITestCase):
         {"products": [{"product": 1, "quantity": 1}],
          "firstname": "Dmitri",
          "lastname": "Kubarev",
-         "phonenumber": "89857791213",
+         "phonenumber": "+79857791213",
          "address": "ул Маршала Катукова"}
          """, content_type='application/json')
 

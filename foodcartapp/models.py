@@ -78,9 +78,9 @@ class RestaurantMenuItem(models.Model):
 
 
 class Order(models.Model):
-    first_name = models.CharField('Имя', max_length=50)
-    last_name = models.CharField('Фамилия', max_length=50)
-    phone_number = PhoneNumberField(verbose_name='Тел.')
+    firstname = models.CharField('Имя', max_length=50)
+    lastname = models.CharField('Фамилия', max_length=50)
+    phonenumber = PhoneNumberField(verbose_name='Тел.')
     address = models.TextField('Адрес')
     products = models.ManyToManyField(Product, related_name="order_product",
                                       verbose_name='Позиции заказа',
@@ -98,7 +98,7 @@ class OrderProducts(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,
                                 verbose_name='продукт')
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    amount = models.IntegerField(verbose_name='Количество')
+    quantity = models.IntegerField(verbose_name='Количество')
 
     class Meta:
         ordering = ['product', ]
