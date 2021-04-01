@@ -5,6 +5,11 @@ from rest_framework.serializers import ModelSerializer, Serializer
 from foodcartapp.models import Product, OrderProducts, Order
 
 
+class OrderSerializer(ModelSerializer):
+     class Meta:
+         model = Order
+
+
 class OrderProductsSerializer(ModelSerializer):
     product = IntegerField()
 
@@ -32,8 +37,10 @@ class ProductSerializer(Serializer):
 
 class OrderSerializer(ModelSerializer):
 
-    products = OrderProductsSerializer(many=True)
+    products = OrderProductsSerializer(many=True, write_only=True)
 
     class Meta:
         model = Order
-        fields = ['firstname', 'lastname', 'phonenumber', 'address', 'products']
+        fields = ['id', 'firstname', 'lastname', 'phonenumber', 'address',
+                  'products']
+        write_only_fields = ['products',]

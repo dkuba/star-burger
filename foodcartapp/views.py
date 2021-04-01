@@ -76,4 +76,7 @@ def register_order(request):
             product=Product.objects.get(id=product_data['product']),
             order=order, quantity=product_data['quantity'])
 
-    return Response({}, status=status.HTTP_200_OK)
+    order_serializer = OrderSerializer(order)
+
+    return Response(order_serializer.data,
+                    status=status.HTTP_201_CREATED)
