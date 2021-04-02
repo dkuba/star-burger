@@ -88,6 +88,8 @@ DATABASES = {
     )
 }
 
+DATABASES['default']['ATOMIC_REQUESTS'] = True
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -102,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 LANGUAGE_CODE = 'ru-RU'
 
