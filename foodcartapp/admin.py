@@ -1,8 +1,11 @@
 from django.contrib import admin
+from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import reverse, redirect
 from django.templatetags.static import static
 from django.utils.html import format_html
+from django.utils.http import url_has_allowed_host_and_scheme
 
+from star_burger.settings import ALLOWED_HOSTS
 from .models import Product, Order, OrderProducts
 from .models import ProductCategory
 from .models import Restaurant
@@ -117,4 +120,12 @@ class OrderAdmin(admin.ModelAdmin):
     ]
 
     def response_change(self, request, obj):
-        return redirect('/manager/orders')
+        redirect_to = request.GET.get('next', '')
+        if redirect_to:
+            if url_has_allowed_host_and_scheme('https://google.com',
+                                               allowed_hosts=ALLOWED_HOSTS):
+                return redirect(redirect_to)
+            else:
+                return HttpResponseNotAllowed('')
+
+        return super(OrderAdmin, self).response_change(request, obj)
