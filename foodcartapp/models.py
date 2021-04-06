@@ -97,6 +97,9 @@ class Order(models.Model):
                                                ('Электронно', 'Электронно')],
                                       default='Наличными')
 
+    restaurant = models.ForeignKey(Restaurant, verbose_name='Ресторан',
+                                   on_delete=models.PROTECT)
+
     comment = models.TextField('Комментарий', null=True, blank=True)
 
     created = models.DateTimeField('Дата заказа', auto_now=True)
