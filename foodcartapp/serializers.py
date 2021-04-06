@@ -41,6 +41,6 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'firstname', 'lastname', 'phonenumber', 'address',
-                  'products']
-        write_only_fields = ['products',]
+        fields = ['id', 'firstname', 'status', 'lastname', 'phonenumber',
+                  'address', 'products']
+        write_only_fields = ['products', ]

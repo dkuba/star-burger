@@ -122,7 +122,7 @@ class OrderAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         redirect_to = request.GET.get('next', '')
         if redirect_to:
-            if url_has_allowed_host_and_scheme('https://google.com',
+            if url_has_allowed_host_and_scheme(redirect_to,
                                                allowed_hosts=ALLOWED_HOSTS):
                 return redirect(redirect_to)
             else:

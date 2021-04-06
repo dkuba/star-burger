@@ -85,6 +85,8 @@ class Order(models.Model):
     products = models.ManyToManyField(Product, related_name="order_product",
                                       verbose_name='Позиции заказа',
                                       through='OrderProducts')
+    status = models.CharField('Сатус', max_length=20, choices=[
+        ('Обработан', 'Обработан'), ('Не обработан', 'Не обработан')], default='Не обработан')
 
     class Meta:
         verbose_name = 'Заказ'
