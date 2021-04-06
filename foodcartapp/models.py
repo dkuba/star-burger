@@ -78,15 +78,17 @@ class RestaurantMenuItem(models.Model):
 
 
 class Order(models.Model):
-    firstname = models.CharField('Имя', max_length=50)
-    lastname = models.CharField('Фамилия', max_length=50)
-    phonenumber = PhoneNumberField(verbose_name='Тел.')
+    firstname = models.CharField('Имя', max_length=50, db_index=True)
+    lastname = models.CharField('Фамилия', max_length=50, db_index=True)
+    phonenumber = PhoneNumberField(verbose_name='Тел.', db_index=True)
     address = models.TextField('Адрес')
     products = models.ManyToManyField(Product, related_name="order_product",
                                       verbose_name='Позиции заказа',
                                       through='OrderProducts')
     status = models.CharField('Сатус', max_length=20, choices=[
-        ('Обработан', 'Обработан'), ('Не обработан', 'Не обработан')], default='Не обработан')
+        ('Обработан', 'Обработан'), ('Не обработан', 'Не обработан')],
+                              default='Не обработан')
+    comment = models.TextField('Комментарий', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Заказ'
