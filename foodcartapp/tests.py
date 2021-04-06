@@ -1,8 +1,14 @@
+from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from foodcartapp.models import Product
 
+
+class ModelsTest(TestCase):
+
+    def test_order_model(self):
+        pass
 
 class OrderTestCase(APITestCase):
     def setUp(self):

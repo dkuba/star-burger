@@ -1,5 +1,8 @@
+import datetime
+
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -89,6 +92,10 @@ class Order(models.Model):
         ('Обработан', 'Обработан'), ('Не обработан', 'Не обработан')],
                               default='Не обработан')
     comment = models.TextField('Комментарий', null=True, blank=True)
+
+    created = models.DateTimeField('Дата заказа', auto_now=True)
+    call_date = models.DateTimeField('Дата звонка', null=True, blank=True)
+    ship_date = models.DateTimeField('Дата доставки', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Заказ'

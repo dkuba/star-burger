@@ -119,6 +119,8 @@ class OrderAdmin(admin.ModelAdmin):
         OrderProductsInline,
     ]
 
+    readonly_fields = ('created', )
+
     def response_change(self, request, obj):
         redirect_to = request.GET.get('next', '')
         if redirect_to:
