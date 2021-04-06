@@ -91,6 +91,12 @@ class Order(models.Model):
     status = models.CharField('Сатус', max_length=20, choices=[
         ('Обработан', 'Обработан'), ('Не обработан', 'Не обработан')],
                               default='Не обработан')
+
+    payment_method = models.CharField('Способ оплаты', max_length=20,
+                                      choices=[('Наличными', 'Наличными'),
+                                               ('Электронно', 'Электронно')],
+                                      default='Наличными')
+
     comment = models.TextField('Комментарий', null=True, blank=True)
 
     created = models.DateTimeField('Дата заказа', auto_now=True)

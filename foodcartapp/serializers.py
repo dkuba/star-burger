@@ -42,5 +42,5 @@ class OrderSerializer(ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'firstname', 'status', 'lastname', 'phonenumber',
-                  'address', 'products']
+                  'address', 'products', 'payment_method']
         write_only_fields = ['products', ]

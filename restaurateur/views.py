@@ -101,6 +101,6 @@ def view_orders(request):
     context = []
     for order in Order.objects.all():
         context.append(OrderSerializer(order).data)
-    print('context', context)
+
     return render(request, template_name='order_items.html',
                   context={'order_items': context})
