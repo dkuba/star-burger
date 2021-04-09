@@ -98,6 +98,7 @@ class Order(models.Model):
                                       default='Наличными')
 
     restaurant = models.ForeignKey(Restaurant, verbose_name='Ресторан',
+                                   null=True, blank=True,
                                    on_delete=models.PROTECT)
 
     comment = models.TextField('Комментарий', null=True, blank=True)
@@ -127,3 +128,10 @@ class OrderProducts(models.Model):
         ordering = ['product', ]
         verbose_name = 'Позиция заказа'
         verbose_name_plural = 'Позиции заказа'
+
+
+class PlaceCoordinate(models.Model):
+    address = models.CharField(max_length=100)
+    lat = models.CharField(null=True, blank=True, max_length=50)
+    lon = models.CharField(null=True, blank=True, max_length=50)
+    date = models.DateTimeField(auto_now=True)

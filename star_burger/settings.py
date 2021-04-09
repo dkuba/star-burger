@@ -15,7 +15,7 @@ GEO_CODER_KEY = env('GEO_CODER_KEY', 'no_key')
 SECRET_KEY = env('SECRET_KEY', 'REPLACE_ME')
 DEBUG = env.bool('DEBUG', True)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['127.0.0.1', 'localhost'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', [])
 
 INSTALLED_APPS = [
     'foodcartapp.apps.FoodcartappConfig',
@@ -133,3 +133,5 @@ REST_FRAMEWORK = {
     'FORM_CONTENT_OVERRIDE': None,
     'FORM_CONTENTTYPE_OVERRIDE': None
 }
+
+COORDS_CACHE_EXPIRES_SEC = 86400

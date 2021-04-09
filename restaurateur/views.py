@@ -1,6 +1,6 @@
 from django import forms
-from django.contrib.sites import requests
 from django.shortcuts import redirect, render
+
 from django.views import View
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
@@ -8,12 +8,12 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
-import requests
 from geopy import distance
 
 from foodcartapp.models import Product, Restaurant, Order
 from foodcartapp.serializers import OrderSerializer
-from star_burger.settings import GEO_CODER_KEY
+
+import restaurateur.coordinates_services as coord_srv
 
 
 class Login(forms.Form):
@@ -76,12 +76,13 @@ def view_products(request):
     default_availability = {restaurant.id: False for restaurant in restaurants}
     products_with_restaurants = []
     for product in products:
-
         availability = {
             **default_availability,
-            **{item.restaurant_id: item.availability for item in product.menu_items.all()},
+            **{item.restaurant_id: item.availability for item in
+               product.menu_items.all()},
         }
-        orderer_availability = [availability[restaurant.id] for restaurant in restaurants]
+        orderer_availability = [availability[restaurant.id] for restaurant in
+                                restaurants]
 
         products_with_restaurants.append(
             (product, orderer_availability)
@@ -103,13 +104,14 @@ def view_restaurants(request):
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
     context = []
+    restaurants = list(Restaurant.objects.all())
     for order in Order.objects.all():
         order_info = OrderSerializer(order).data
         order_info['restaurants'] = []
 
-        for restorant in Restaurant.objects.all():
-            order_coord = fetch_coordinates(order.address)
-            restorant_coord = fetch_coordinates(restorant.address)
+        for restorant in restaurants:
+            order_coord = coord_srv.get_coodinates(order.address)
+            restorant_coord = coord_srv.get_coodinates(restorant.address)
             dist = round(distance.distance(order_coord, restorant_coord).km, 2)
             order_info['restaurants'].append({'name': restorant.name,
                                               'dist': dist})
@@ -119,15 +121,3 @@ def view_orders(request):
 
     return render(request, template_name='order_items.html',
                   context={'order_items': context})
-
-
-def fetch_coordinates(place):
-    base_url = "https://geocode-maps.yandex.ru/1.x"
-    params = {"geocode": place, "apikey": GEO_CODER_KEY, "format": "json"}
-    response = requests.get(base_url, params=params)
-    response.raise_for_status()
-    found_places = \
-        response.json()['response']['GeoObjectCollection']['featureMember']
-    most_relevant = found_places[0]
-    lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
-    return tuple([lat, lon])

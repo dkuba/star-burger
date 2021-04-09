@@ -1,14 +1,29 @@
+import time
+
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from foodcartapp.models import Product
+from foodcartapp.models import Product, PlaceCoordinate
 
 
-class ModelsTest(TestCase):
+class TestPlaceCoordinateModel(TestCase):
 
-    def test_order_model(self):
-        pass
+    def setUp(self):
+        PlaceCoordinate.objects.create(address='test addr')
+
+    def test_model_create(self):
+        self.assertTrue(PlaceCoordinate.objects.get(address='test addr').date)
+
+    def test_model_update(self):
+        place = PlaceCoordinate.objects.get(address='test addr')
+        old_date = place.date
+        place.lon = '1'
+        time.sleep(1)
+        place.save()
+        new_date = place.date
+        self.assertNotEqual(old_date, new_date)
+
 
 class OrderTestCase(APITestCase):
     def setUp(self):
